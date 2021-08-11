@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Google Tag Manager (GTM) 🎉</title>
+    <script>
+      document.addEventListener('DOMContentLoaded', (ev) => {
+        console.log('DOMContentLoaded', ev);
+      });
+      document.addEventListener('readystatechange', (ev) => {
+        console.log('readystatechange', ev);
+      });
+    </script>
+    <!-- Google Tag Manager -->
+    <script type="partytown" worker="GTM">
+      (function (window, document, i) {
+        window['dataLayer'] = window[dataLayer] || [];
+
+        window['dataLayer'].push({ 'gtm.start': new Date().getTime(), 'event': 'gtm.js' });
+
+        var firstScript = document.getElementsByTagName('script')[0];
+        var gtmScript = document.createElement('script');
+        var dataLayer = 'dataLayer' != 'dataLayer' ? '&l=' + 'dataLayer' : '';
+
+        gtmScript.async = true;
+        gtmScript.src = './gtm.js?id=' + i + dataLayer;
+
+        firstScript.parentNode.insertBefore(gtmScript, firstScript);
+      })(window, document, 'GTM-TEST');
+    </script>
+    <!-- End Google Tag Manager -->
+    <link
+      rel="icon"
+      id="favicon"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎉</text></svg>"
+    />
+  </head>
+  <body>
+    <h1>Google Tag Manager (GTM) 🎉</h1>
+    <!-- Add the debug attributes to the script element for more logs -->
+    <script
+      src="/partytown.debug.js"
+      src-partytown-worker="/partytown.debug.worker.js"
+      async
+      debug-method-calls
+      debug-property-getters
+      debug-property-setters
+      __debug-define-methods
+      __debug-define-properties
+    ></script>
+  </body>
+</html>

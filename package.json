@@ -1,0 +1,22 @@
+{
+  "name": "@builder.io/partytown",
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w --configDev",
+    "serve": "sirv --port 4000 --dev",
+    "test": "jest",
+    "test.watch": "jest --watch"
+  },
+  "devDependencies": {
+    "@rollup/plugin-typescript": "^8.2.5",
+    "@types/jest": "^26.0.24",
+    "jest": "^27.0.6",
+    "prettier": "^2.3.2",
+    "rollup": "^2.55.1",
+    "rollup-plugin-terser": "^7.0.2",
+    "sirv-cli": "^1.0.12",
+    "ts-jest": "^27.0.4",
+    "tslib": "^2.3.0",
+    "typescript": "^4.3.5"
+  }
+}
