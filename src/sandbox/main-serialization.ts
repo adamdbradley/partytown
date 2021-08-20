@@ -1,37 +1,37 @@
+import { getInstance, getInstanceId } from './main-instances';
 import {
   SerializedConstructorType,
   SerializedHTMLCollection,
   SerializedInstance,
   SerializedNode,
+  SerializedType,
   SerializedValueTransfer,
-  SerializeType,
 } from '../types';
-import { getInstance, getInstanceId } from './main-instances';
 
 export const serializeValue = (value: any, added: Set<any>): SerializedValueTransfer => {
   const type = typeof value;
   if (type === 'string' || type === 'number' || type === 'boolean' || value === null) {
-    return [SerializeType.Primitive, value];
+    return [SerializedType.Primitive, value];
   }
 
   if (type === 'function') {
-    return [SerializeType.Method];
+    return [SerializedType.Method];
   }
 
   if (Array.isArray(value)) {
     if (!added.has(value)) {
       added.add(value);
-      return [SerializeType.Array, value.map((v) => serializeValue(v, added))];
+      return [SerializedType.Array, value.map((v) => serializeValue(v, added))];
     }
-    return [SerializeType.Array, []];
+    return [SerializedType.Array, []];
   }
 
   if (type === 'object') {
     if (value === window.parent) {
-      return [SerializeType.Window];
+      return [SerializedType.Window];
     }
     if (value === window.parent!.document) {
-      return [SerializeType.Document];
+      return [SerializedType.Document];
     }
 
     if (value.nodeType) {
@@ -40,7 +40,7 @@ export const serializeValue = (value: any, added: Set<any>): SerializedValueTran
         $cstr$: value.nodeType,
         $nodeName$: value.nodeName,
       };
-      return [SerializeType.Instance, nodeInstance];
+      return [SerializedType.Instance, nodeInstance];
     }
 
     if (!added.has(value)) {
@@ -54,7 +54,7 @@ export const serializeValue = (value: any, added: Set<any>): SerializedValueTran
             $items$: Array.from(value).map((v) => serializeValue(v, added)[1]),
           };
           const htmlCollection: SerializedValueTransfer = [
-            SerializeType.Instance,
+            SerializedType.Instance,
             htmlCollectionInstance,
           ];
           console.log('htmlCollection', htmlCollection);
@@ -63,14 +63,14 @@ export const serializeValue = (value: any, added: Set<any>): SerializedValueTran
       }
 
       const obj: { [key: string]: any } = {};
-      const objTransfer: SerializedValueTransfer = [SerializeType.Object, obj];
+      const objTransfer: SerializedValueTransfer = [SerializedType.Object, obj];
       for (const k in value) {
         obj[k] = serializeValue(value[k], added);
       }
       return objTransfer;
     }
 
-    return [SerializeType.Object, {}];
+    return [SerializedType.Object, {}];
   }
 
   return [];

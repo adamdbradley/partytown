@@ -1,5 +1,5 @@
-import { PT_PROXY_URL } from '../constants';
 import {
+  AccessType,
   MainAccessRequest,
   MainAccessResponse,
   SerializedConstructorType,
@@ -7,11 +7,10 @@ import {
   SerializedInstance,
   SerializedNode,
   SerializedValueTransfer,
-  SerializeType,
-  AccessType,
+  SerializedType,
 } from '../types';
-import { toLower } from '../utils';
 import { CstrValues, InstanceIdKey, NodeNameKey, NodeTypeKey, ProxyKey } from './worker-symbols';
+import { PT_PROXY_URL, toLower } from '../utils';
 
 let msgIds = 0;
 
@@ -209,24 +208,24 @@ export const constructValue = (
   const serializedValue = serializedValueTransfer[1] as any;
   console.log(`constructValue, memberName: ${memberName}`, serializedValue);
 
-  if (serializedType === SerializeType.Primitive) {
+  if (serializedType === SerializedType.Primitive) {
     return serializedValue;
   }
 
-  if (serializedType === SerializeType.Method) {
+  if (serializedType === SerializedType.Method) {
     return createMethodProxy(target, memberName);
   }
 
-  if (serializedType === SerializeType.Instance) {
+  if (serializedType === SerializedType.Instance) {
     const serializedInstance: SerializedInstance = serializedValue;
     return constructInstance(serializedInstance);
   }
 
-  if (serializedType === SerializeType.Object) {
+  if (serializedType === SerializedType.Object) {
     return proxy(serializedValue);
   }
 
-  if (serializedType === SerializeType.Array) {
+  if (serializedType === SerializedType.Array) {
     const serializedArray: SerializedValueTransfer[] = serializedValue;
     return serializedArray.map((v) => constructValue(target, memberName, v));
   }

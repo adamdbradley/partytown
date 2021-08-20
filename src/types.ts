@@ -43,7 +43,7 @@ export interface SerializedMembers {
   [propName: string]: SerializedValueTransfer;
 }
 
-export const enum SerializeType {
+export const enum SerializedType {
   Window,
   Document,
   Method,
@@ -54,13 +54,13 @@ export const enum SerializeType {
 }
 
 export type SerializedValueTransfer =
-  | [SerializeType.Window]
-  | [SerializeType.Document]
-  | [SerializeType.Method]
-  | [SerializeType.Primitive, string | number | boolean]
-  | [SerializeType.Array, SerializedValueTransfer[]]
-  | [SerializeType.Instance, SerializedInstance]
-  | [SerializeType.Object, any]
+  | [SerializedType.Window]
+  | [SerializedType.Document]
+  | [SerializedType.Method]
+  | [SerializedType.Primitive, string | number | boolean]
+  | [SerializedType.Array, SerializedValueTransfer[]]
+  | [SerializedType.Instance, SerializedInstance]
+  | [SerializedType.Object, any]
   | [];
 
 export interface SerializedInstance {

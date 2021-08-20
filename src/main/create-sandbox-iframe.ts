@@ -1,4 +1,4 @@
-import { PT_SANDBOX_URL } from '../constants';
+import { PT_SANDBOX_URL } from '../utils';
 
 export const createSandboxIframe = (mainDocument: Document, scopePath: string) => {
   const sandbox = mainDocument.createElement('iframe');

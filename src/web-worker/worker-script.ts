@@ -1,6 +1,6 @@
-import { logWorker } from '../utils';
-import type { InitializeScriptData } from '../types';
 import type { Document } from './worker-proxy';
+import type { InitializeScriptData } from '../types';
+import { logWorker } from '../utils';
 
 export const initMainScriptsInWebWorker = (initializeScripts: InitializeScriptData[]) => {
   initializeScripts.forEach((initializeScript) => {

@@ -1,5 +1,5 @@
-import { PT_PROXY_URL, PT_SANDBOX_URL } from '../constants';
 import { httpRequestFromWebWorker } from './sw-message';
+import { PT_PROXY_URL, PT_SANDBOX_URL } from '../utils';
 
 export const onFetchServiceWorkerRequest = (self: ServiceWorkerGlobalScope, ev: FetchEvent) => {
   const req = ev.request;

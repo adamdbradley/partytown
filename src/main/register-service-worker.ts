@@ -1,5 +1,5 @@
-import { PT_SERVICE_WORKER_URL } from '../constants';
 import { createSandboxIframe } from './create-sandbox-iframe';
+import { PT_SERVICE_WORKER_URL } from '../utils';
 
 export const registerServiceWorker = async (
   mainDocument: Document,
