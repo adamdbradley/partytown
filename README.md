@@ -53,15 +53,18 @@ should set the `type` attribute to `text/plain`, and set the `data-partytown` at
 </script>
 ```
 
-The Party Town library script must also be added to the bottom of the page and have the
-`type="module"` attribute. Note that this script _must_ be hosted from the same origin as
+The Party Town library should be added to the bottom of the page and have both the
+`type="module"` and `async` attributes. The `type="module"` attribute ensures the library is
+loaded as an ES module, and the `async` attribute tells the browser this not a critical resource.
+
+Note that this script _must_ be hosted from the same origin as
 the html page, rather than a CDN. Additionally, the Party Town library scripts should be
 within their own dedicated root directory, such as `/~partytown/`. This root directory
 becomes the `scope` for the service worker, and all client-side requests within that path
 are intercepted by Party Town.
 
 ```html
-<script src="/~partytown/partytown.js" type="module></script>
+<script src="/~partytown/partytown.js" type="module" async></script>
 ```
 
 With scripts disabled from executing, the Party Town library can lazily begin loading and
