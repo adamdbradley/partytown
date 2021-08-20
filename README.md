@@ -36,6 +36,7 @@
 - [ES Modules](https://caniuse.com/es6-module)
 - [Service Workers](https://caniuse.com/serviceworkers)
 - [JS Proxies](https://caniuse.com/proxy)
+- [Reflect](https://caniuse.com/mdn-javascript_builtins_reflect)
 
 ---
 
