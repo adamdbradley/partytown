@@ -48,7 +48,7 @@ should set the `type` attribute to `text/plain`, and set the `data-partytown` at
 2. Provides an attribute selector for the Party Town library.
 
 ```html
-<script type="text/plain" data-partytown>
+<script data-partytown type="text/plain">
   // 3rd-party analytics scripts
 </script>
 ```
@@ -69,53 +69,41 @@ are intercepted by Party Town.
 With scripts disabled from executing, the Party Town library can lazily begin loading and
 executing the scripts from inside a worker.
 
-## Distribution
-
-The distribution comes with two builds:
-
-### `partytown.js`
-
-- Single-file with the worker script inlined so there is only one request
-- Minified and property renamed
-- Console logs removed
-
-### `partytown.debug.js`
-
-- Fires a second network request for the web worker at `partytown.debug.worker.js`
-- Not meant for production, but useful to inspect what scripts are up to
-- Readable property names
-- Opt-in for additional console logs using attributes on the script element:
-  - `debug-property-getters`: Log every browser API property getter
-  - `debug-property-setters`: Log every browser API property setter
-  - `debug-method-calls`: Log every browser API method call
-  - `debug-define-methods`: Log all of the browser API methods that were defined
-  - `debug-define-properties`: Log all of the browser API properties that were defined
-
-Example script with a debug attribute to print out more logs.
-
-```html
-<script src="/partytown.debug.js" debug-method-calls async></script>
-```
-
-### Worker Instances
+## Worker Instances
 
 By default all Party Town scripts will load in the same worker. However, each
-script could placed in their own named web worker, or separated into  
+script could be placed in their own named web worker, or separated into  
 groups by giving the script a `data-worker` attribute.
 
 ```html
-<script type="text/plain" data-partytown data-worker="GTM">
+<script data-partytown data-worker="GTM" type="text/plain">
   // Google Tag Manager
 </script>
 
-<script type="text/plain" data-partytown data-worker="GA">
+<script data-partytown data-worker="GA" type="text/plain">
   // Google Analytics
 </script>
 ```
 
 By placing each script in their own worker it may be easier to separate and debug
-what each script is executing. However, in production it may be preferred to always
+what each script is executing. However, in production it may be preferred to
 share one worker.
+
+## Distribution
+
+The distribution comes with multiple files:
+
+### `/~partytown/partytown.js`
+
+- The initial script to be loaded on the main thread
+- This script is minified and loads the other minified library scripts
+- Contents of this file could be used to inline into the HTML instead, in order to reduce an extra HTTP request
+
+### `/~partytown/partytown.debug.js`
+
+- Same as `/~partytown/partytown.js`, but not minified
+- Loads other debug library scripts
+- Not meant for production, but useful to inspect what scripts are up to
 
 ---
 
