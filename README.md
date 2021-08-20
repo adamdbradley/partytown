@@ -25,10 +25,10 @@
 
 ### Trade-offs
 
-- Party Town library scripts must be hosted from the same origin as the document (not a CDN)
-- DOM operations are purposely throttled, slowing down execution
-- Not ideal for scripts that are required to be blocking (blocking is bad)
-- Service worker network requests (even though they're all intercepted and not actual external http requests, they still show up in the network tab)
+- Party Town library scripts must be hosted from the same origin as the HTML document (not a CDN)
+- DOM operations within the worker are purposely throttled, slowing down worker execution
+- Not ideal for scripts that are required to block the main document (blocking is bad)
+- Service worker network requests (even though they're all intercepted, not actual external HTTP requests, and do not affect Lighthouse scores, many service worker network requests still show up in the network tab)
 - Party Town library initially has two HTTP requests on the first load, then only one HTTP request after that
 
 ### Browser Feature Requirements
