@@ -7,6 +7,7 @@ export default function (cmdArgs) {
   const isDev = !!cmdArgs.configDev;
   const buildDir = join(__dirname, '~partytown');
   const cacheDir = join(__dirname, '.cache');
+  const cache = {};
 
   const minOpts = {
     compress: {
@@ -56,7 +57,9 @@ export default function (cmdArgs) {
               outputToFilesystem: false,
             }),
           ],
+          cache: cache.ww,
         });
+        cache.ww = build.cache;
 
         const generated = await build.generate({
           format: 'es',
@@ -95,7 +98,9 @@ export default function (cmdArgs) {
               outputToFilesystem: false,
             }),
           ],
+          cache: cache.sb,
         });
+        cache.sb = build.cache;
 
         const generated = await build.generate({
           format: 'es',
