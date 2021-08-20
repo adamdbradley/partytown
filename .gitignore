@@ -1,4 +1,4 @@
-.cache
+.cache/
 .DS_Store
 ~partytown/
-node_modules
+node_modules/

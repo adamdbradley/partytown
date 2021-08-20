@@ -18,6 +18,7 @@
 - Configure which browser APIs specific scripts can, and cannot, execute
 - Opt-in only, and does not automatically update existing scripts
 - Allow 3rd-party scripts to run exactly how they're coded, and without any alterations
+- Read/write main thread DOM operations _synchronously_ from within a web worker
 
 ### Trade-offs
 
