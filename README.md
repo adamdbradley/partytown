@@ -29,7 +29,6 @@
 - DOM operations within the worker are purposely throttled, slowing down worker execution
 - Not ideal for scripts that are required to block the main document (blocking is bad)
 - Service worker network requests (even though they're all intercepted, not actual external HTTP requests, and do not affect [Lighthouse scores](https://web.dev/performance-scoring/), many service worker network requests still show up in the network tab)
-- Party Town library initially has two HTTP requests on the first load, then only one HTTP request after that
 
 ### Browser Feature Requirements
 
