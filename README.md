@@ -19,6 +19,7 @@
 - Opt-in only, and does not automatically update existing scripts
 - Allow 3rd-party scripts to run exactly how they're coded, and without any alterations
 - Read/write main thread DOM operations _synchronously_ from within a web worker
+- No build-steps or bundling required, but rather update scripts the same as traditional 3rd-party scripts are updated
 
 ### Trade-offs
 
@@ -26,7 +27,7 @@
 - DOM operations are purposely throttled, slowing down execution
 - Not ideal for scripts that are required to be blocking (blocking is bad)
 - Service worker network requests (even though they're all intercepted and not actual external http requests, they still show up in the network tab)
-- Two Party Town library http requests on the first load, only one http request after that
+- Party Town library initially has two HTTP requests on the first load, then only one HTTP request after that
 
 ### Browser Feature Requirements
 
