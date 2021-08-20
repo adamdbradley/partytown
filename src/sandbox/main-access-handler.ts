@@ -2,7 +2,7 @@ import { deserializeValue, serializeValue } from './main-serialization';
 import { getInstance } from './main-instances';
 import { MainAccessRequest, MainAccessResponse, AccessType } from '../types';
 
-export const mainAccessHandler = async (accessReq: MainAccessRequest) => {
+export const mainAccessHandler = async (key: number, accessReq: MainAccessRequest) => {
   const accessType = accessReq.$accessType$;
   const instanceId = accessReq.$instanceId$;
   const memberName = accessReq.$memberName$!;
@@ -13,17 +13,21 @@ export const mainAccessHandler = async (accessReq: MainAccessRequest) => {
   };
 
   try {
-    const instance = getInstance(instanceId);
-    if (instance) {
-      if (accessType === AccessType.Get) {
-        getInstanceMember(instance, memberName, accessRsp);
-      } else if (accessType === AccessType.Set) {
-        setInstanceProp(instance, memberName, data);
-      } else if (accessType === AccessType.Apply) {
-        instanceCallMethod(instance, memberName, data, accessRsp);
+    if (accessReq.$key$ === key) {
+      const instance = getInstance(instanceId);
+      if (instance) {
+        if (accessType === AccessType.Get) {
+          getInstanceMember(instance, memberName, accessRsp);
+        } else if (accessType === AccessType.Set) {
+          setInstanceProp(instance, memberName, data);
+        } else if (accessType === AccessType.Apply) {
+          instanceCallMethod(instance, memberName, data, accessRsp);
+        }
+      } else {
+        accessRsp.$error$ = `Instance ${instanceId} not found`;
       }
     } else {
-      accessRsp.$error$ = `Instance ${instanceId} not found`;
+      accessRsp.$error$ = `Invalid key`;
     }
   } catch (e) {
     accessRsp.$error$ = String(e.stack || e);

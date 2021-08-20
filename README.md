@@ -96,12 +96,16 @@ The distribution comes with multiple files:
 ### `/~partytown/partytown.js`
 
 - The initial script to be loaded on the main thread
-- This script is minified and loads the other minified library scripts
-- Contents of this file could be used to inline into the HTML instead, in order to reduce an extra HTTP request
+- Minified and property renamed
+- Console logs removed
+- Loads the other minified library scripts
+- Contents of this file could be used to inline this script into the HTML instead, in order to reduce an extra HTTP request
 
 ### `/~partytown/partytown.debug.js`
 
-- Same as `/~partytown/partytown.js`, but not minified
+- Same purpose as `/~partytown/partytown.js`
+- Not minified
+- Includes console logs
 - Loads other debug library scripts
 - Not meant for production, but useful to inspect what scripts are up to
 

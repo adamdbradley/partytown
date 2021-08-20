@@ -4,7 +4,10 @@ export interface InitWebWorkerData {
   $initializeScripts$: InitializeScriptData[];
   $methodNames$: string[];
   $scopePath$: string;
+  $key$: number;
 }
+
+export interface WebWorkerContext extends InitWebWorkerData {}
 
 export interface InitializeScriptData {
   $id$: number;
@@ -30,6 +33,7 @@ export interface MainAccessRequest {
   $instanceId$: number;
   $memberName$?: string;
   $data$?: any;
+  $key$?: number;
 }
 
 export interface MainAccessResponse {

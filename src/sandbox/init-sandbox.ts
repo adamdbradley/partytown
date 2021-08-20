@@ -5,6 +5,7 @@ import { readMainScripts } from './read-main-scripts';
 import { setInstanceId } from './main-instances';
 
 export const initSandbox = async (sandboxWindow: Window, createWebWorker: CreateWorker) => {
+  const key = Math.random();
   const mainWindow = sandboxWindow.parent!;
   const mainDocument = mainWindow.document;
   const swContainer = sandboxWindow.navigator.serviceWorker;
@@ -16,6 +17,7 @@ export const initSandbox = async (sandboxWindow: Window, createWebWorker: Create
     $initializeScripts$: readMainScripts(mainDocument),
     $methodNames$: readImplementations(mainWindow, mainDocument),
     $scopePath$: swRegistration!.scope!,
+    $key$: key,
   };
 
   setInstanceId(mainWindow, InstanceId.window);
@@ -23,7 +25,7 @@ export const initSandbox = async (sandboxWindow: Window, createWebWorker: Create
 
   swContainer.addEventListener('message', (ev) => {
     requestAnimationFrame(async () => {
-      const accessRsp = await mainAccessHandler(ev.data);
+      const accessRsp = await mainAccessHandler(key, ev.data);
       if (swRegistration && swRegistration.active) {
         swRegistration.active.postMessage(accessRsp);
       }

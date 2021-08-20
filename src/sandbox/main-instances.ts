@@ -3,15 +3,15 @@ import { InstanceId } from '../types';
 let instanceIds = InstanceId.document + 1;
 
 const instancesById = new Map<number, any>();
-const idsByInstance = new WeakMap<any, number>();
+const InstanceIdKey = Symbol('InstanceId');
 
 export const setInstanceId = (instance: any, instanceId: number) => {
   instancesById.set(instanceId, instance);
-  idsByInstance.set(instance, instanceId);
+  instance[InstanceIdKey] = instanceId;
 };
 
 export const getInstanceId = (instance: any): number => {
-  let instanceId = idsByInstance.get(instance);
+  let instanceId = instance[InstanceIdKey];
   if (typeof instanceId !== 'number') {
     instanceId = instanceIds++;
     setInstanceId(instance, instanceId);
