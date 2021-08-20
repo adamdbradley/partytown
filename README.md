@@ -9,6 +9,7 @@
 - Throttled 3rd-party code by using one `requestAnimationFrame()` per DOM operation, reducing jank
 - Debug what 3rd-party scripts are calling into
 - Sandbox specific browser APIs
+- Main thread performance is, without question, more important than web worker thread performance
 
 ### Goals
 
@@ -16,9 +17,10 @@
 - Reduce layout thrashing coming from 3rd-party scripts
 - Isolate 3rd-party scripts within a sandbox (web worker) to give better insight as to what the scripts are doing
 - Configure which browser APIs specific scripts can, and cannot, execute
+- Webapp startup time unchanged when Party Town library is added
 - Opt-in only, and does not automatically update existing scripts
-- Allow 3rd-party scripts to run exactly how they're coded, and without any alterations
-- Read/write main thread DOM operations _synchronously_ from within a web worker
+- Allow 3rd-party scripts to run exactly how they're coded and without any alterations
+- Read and write main thread DOM operations _synchronously_ from within a web worker
 - No build-steps or bundling required, but rather update scripts the same as traditional 3rd-party scripts are updated
 
 ### Trade-offs
