@@ -15,7 +15,7 @@
 
 - Free up main thread resources to be used only for the primary webapp execution
 - Reduce layout thrashing coming from 3rd-party scripts
-- Isolate 3rd-party scripts within a sandbox (web worker](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API)) to give better insight as to what the scripts are doing
+- Isolate 3rd-party scripts within a sandbox [(web worker)](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API) to give better insight as to what the scripts are doing
 - Configure which browser APIs specific scripts can, and cannot, execute
 - Webapp startup time unchanged when Party Town library is added
 - Opt-in only, and does not automatically update existing scripts
