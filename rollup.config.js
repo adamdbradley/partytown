@@ -5,6 +5,11 @@ import { terser } from 'rollup-plugin-terser';
 
 export default function (cmdArgs) {
   const isDev = !!cmdArgs.configDev;
+  const buildDir = join(__dirname, '~partytown');
+  const cacheDir = join(__dirname, '.cache');
+
+  const sandboxPath = join(cacheDir, 'partytown-sandbox.html');
+  const webWorkerPath = join(cacheDir, 'partytown-ww.js');
 
   const minOpts = {
     compress: {
@@ -45,13 +50,13 @@ export default function (cmdArgs) {
       input: 'src/web-worker/index.ts',
       output: [
         {
-          file: '~partytown/partytown-ww.js',
+          file: webWorkerPath,
           format: 'es',
         },
       ],
       plugins: [
         typescript({
-          cacheDir: join(__dirname, '.cache', 'ww'),
+          cacheDir: join(cacheDir, 'ww'),
           outputToFilesystem: false,
         }),
       ],
@@ -61,27 +66,26 @@ export default function (cmdArgs) {
   function sandbox() {
     const banner = `<!DOCTYPE html><html><head><meta charset="utf-8"><script type="module">`;
     const footer = `</script></head></html>`;
-    const wwSourceFile = join(__dirname, '~partytown', 'partytown-ww.js');
 
     return {
       input: 'src/sandbox/index.ts',
       plugins: [
         typescript({
-          cacheDir: join(__dirname, '.cache', 'sandbox'),
+          cacheDir: join(cacheDir, 'sandbox'),
           outputToFilesystem: false,
         }),
         terser(isDev ? debugOpts : minOpts),
         {
           name: 'sandboxWatch',
           buildStart() {
-            this.addWatchFile(wwSourceFile);
+            this.addWatchFile(webWorkerPath);
           },
         },
         {
           name: 'sandbox',
           generateBundle(opts, bundles) {
             for (const b in bundles) {
-              const webWorker = readFileSync(wwSourceFile, 'utf-8');
+              const webWorker = readFileSync(webWorkerPath, 'utf-8');
               bundles[b].code = bundles[b].code.replace(
                 'globalThis.WEB_WORKER_BLOB',
                 JSON.stringify(webWorker)
@@ -93,7 +97,7 @@ export default function (cmdArgs) {
       ],
       output: [
         {
-          file: '~partytown/partytown-sandbox.html',
+          file: sandboxPath,
           format: 'es',
         },
       ],
@@ -101,32 +105,30 @@ export default function (cmdArgs) {
   }
 
   function serviceWorker() {
-    const sandboxSourceFile = join(__dirname, '~partytown', 'partytown-sandbox.html');
-
     return {
       input: 'src/service-worker/index.ts',
       output: [
         {
-          file: '~partytown/partytown-sw.js',
+          file: join(buildDir, 'partytown-sw.js'),
           format: 'es',
         },
       ],
       plugins: [
         typescript({
-          cacheDir: join(__dirname, '.cache', 'sw'),
+          cacheDir: join(cacheDir, 'sw'),
           outputToFilesystem: false,
         }),
         {
           name: 'serviceWatch',
           buildStart() {
-            this.addWatchFile(sandboxSourceFile);
+            this.addWatchFile(sandboxPath);
           },
         },
         {
           name: 'sw',
           generateBundle(opts, bundles) {
             for (const b in bundles) {
-              const sandbox = readFileSync(sandboxSourceFile, 'utf-8');
+              const sandbox = readFileSync(sandboxPath, 'utf-8');
               bundles[b].code = bundles[b].code.replace(
                 'globalThis.SANDBOX',
                 JSON.stringify(sandbox)
@@ -143,13 +145,13 @@ export default function (cmdArgs) {
       input: 'src/main/index.ts',
       output: [
         {
-          file: '~partytown/partytown.js',
+          file: join(buildDir, 'partytown.js'),
           format: 'es',
         },
       ],
       plugins: [
         typescript({
-          cacheDir: join(__dirname, '.cache', 'main'),
+          cacheDir: join(cacheDir, 'main'),
           outputToFilesystem: false,
         }),
       ],
