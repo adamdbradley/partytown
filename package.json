@@ -1,6 +1,9 @@
 {
   "name": "@builder.io/partytown",
   "license": "MIT",
+  "files": [
+    "/~partytown/"
+  ],
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c -w --configDev",

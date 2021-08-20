@@ -126,11 +126,13 @@ Note that during development, the build of `partytown.js` is not minified.
 
 ### Integration Tests
 
-Tests to be ran on a browser are located in the `tests`. First start the server, then visit http://localhost:4000/
+Tests to be ran on a browser are located in the `tests`. First start the server, then visit http://localhost:4000/tests/
 
 ```
 npm run serve
 ```
+
+http://localhost:4000/tests/
 
 ### Unit Tests
 
