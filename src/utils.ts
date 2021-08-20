@@ -17,23 +17,3 @@ const log = (prefix: string, color: string, msg: string) => [
 ];
 
 export const startsWith = (str: string, searchString: string) => str.startsWith(searchString);
-
-export const enum NodeType {
-  ELEMENT_NODE = 1,
-  TEXT_NODE = 3,
-  COMMENT_NODE = 8,
-  DOCUMENT_NODE = 9,
-  DOCUMENT_TYPE_NODE = 10,
-  DOCUMENT_FRAGMENT_NODE = 11,
-}
-
-export const enum NodeName {
-  Comment = '#comment',
-  Document = '#document',
-  DocumentFragment = '#document-fragment',
-  Text = '#text',
-}
-
-export const SVG_NS = 'http://www.w3.org/2000/svg';
-
-export const HTML_NS = 'http://www.w3.org/1999/xhtml';

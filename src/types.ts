@@ -1,64 +1,85 @@
-import type { Document } from './worker/dom';
+export type CreateWorker = () => Worker;
 
-export const enum MessageType {
-  BootstrapWorker,
+export interface InitWebWorkerData {
+  $initializeScripts$: InitializeScriptData[];
+  $methodNames$: string[];
 }
-
-export type TransferMessage = [MessageType, any];
 
 export interface InitializeScriptData {
   $id$: number;
+  $workerName$: string;
   $content$?: string;
   $url$?: string;
 }
 
-export interface BootstrapWorkerData {
-  $currentUrl$: string;
-  $interfaces$: InterfaceData[];
-  $initializeScripts$?: InitializeScriptData[];
-  $memberNames$: string[];
-  $title$: string;
-  debugDefineMethods?: boolean;
-  debugDefineProperties?: boolean;
-  debugMethodCalls?: boolean;
-  debugPropertyGetters?: boolean;
-  debugPropertySetters?: boolean;
+export const enum AccessType {
+  Get,
+  Set,
+  Apply,
 }
 
-export interface WorkerGlobal extends WorkerGlobalScope, BootstrapWorkerData {
-  document: Document;
-  location: URL;
-  parent: WorkerGlobal;
-  self: any;
-  top: WorkerGlobal;
-  window: WorkerGlobal;
+export const enum InstanceId {
+  window = 0,
+  document = 1,
 }
 
-export type MainInterface = [number, string, any];
-export type WorkerInterface = [number, any];
-
-export const enum InterfaceId {
-  Document = 0,
-  Node = 1,
-  Element = 2,
-  SVGElement = 3,
-  window = 4,
+export interface MainAccessRequest {
+  $msgId$: number;
+  $accessType$: AccessType;
+  $instanceId$: number;
+  $memberName$?: string;
+  $data$?: any;
 }
 
-export const enum Interface {
-  Name = 0,
-  Method = 1,
-  GetterSetter = 2,
-  Prop = 3,
-  InstanceValues = 4,
+export interface MainAccessResponse {
+  $msgId$: number;
+  $instanceId$: number;
+  $rtnValue$?: any;
+  $isPromise$?: any;
+  $error$?: string;
 }
 
-export interface InterfaceData {
-  [Interface.Name]: string;
-  [Interface.Method]: number[];
-  [Interface.GetterSetter]: number[];
-  [Interface.Prop]: any;
-  [Interface.InstanceValues]: { [propApiId: string]: string | number | boolean };
+export interface SerializedMembers {
+  [propName: string]: SerializedValueTransfer;
 }
 
-export type CreateWorker = (workerName?: string) => Worker;
+export const enum SerializeType {
+  Window,
+  Document,
+  Method,
+  Primitive,
+  Array,
+  Object,
+  Instance,
+}
+
+export type SerializedValueTransfer =
+  | [SerializeType.Window]
+  | [SerializeType.Document]
+  | [SerializeType.Method]
+  | [SerializeType.Primitive, string | number | boolean]
+  | [SerializeType.Array, SerializedValueTransfer[]]
+  | [SerializeType.Instance, SerializedInstance]
+  | [SerializeType.Object, any]
+  | [];
+
+export interface SerializedInstance {
+  $cstr$: SerializedConstructorType;
+  $instanceId$?: number;
+}
+
+export const enum SerializedConstructorType {
+  Element = 1, // same as NodeType
+  HTMLCollection = 2,
+  TextNode = 3, // same as NodeType
+  CommentNode = 8, // same as NodeType
+  DocumentFragmentNode = 11, // same as NodeType
+}
+
+export interface SerializedNode extends SerializedInstance {
+  $nodeName$: string;
+}
+
+export interface SerializedHTMLCollection extends SerializedInstance {
+  $items$: SerializedNode[];
+}

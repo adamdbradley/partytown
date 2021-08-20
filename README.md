@@ -6,32 +6,64 @@
 
 - Relocates resource intensive scripts to into a [web worker](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API)
 - Web worker DOM implementation within `4kb`
-- Debug what third-party scripts are calling into
-- Sandboxed browser APIs
+- Throttled 3rd-party code by using one `requestAnimationFrame()` per DOM operation, reducing jank
+- Debug what 3rd-party scripts are calling into
+- Sandbox specific browser APIs
+
+### Goals
+
+- Free up main thread resources to be used only for the primary webapp execution
+- Reduce layout thrashing coming from 3rd-party scripts
+- Isolate 3rd-party scripts within a sandbox (web worker) to give better insight as to what the scripts are doing
+- Configure which browser APIs specific scripts can, and cannot, execute
+- Opt-in only, and does not automatically update existing scripts
+- Allow 3rd-party scripts to run exactly how they're coded, and without any alterations
+
+### Trade-offs
+
+- Party Town library scripts must be hosted from the same origin as the document (not a CDN)
+- DOM operations are purposely throttled, slowing down execution
+- Not ideal for scripts that are required to be blocking (blocking is bad)
+- Service worker network requests (even though they're all intercepted and not actual external http requests, they still show up in the network tab)
+- Two Party Town library http requests on the first load, only one http request after that
+
+### Browser Feature Requirements
+
+- [ES Modules](https://caniuse.com/es6-module)
+- [Service Workers](https://caniuse.com/serviceworkers)
+- [JS Proxies](https://caniuse.com/proxy)
 
 ---
 
-## Party Script
+## Party Town Library Scripts
 
-For each script that should not run in the main thread, but instead party in a web worker, the script
-should set its `type` attribute to `partytown`. This does two things:
+For each 3rd-party script that should not run in the main thread, but instead party 🎉 in a web worker, its script element
+should set the `type` attribute to `text/plain`, and set the `data-partytown` attribute. This does two things:
 
 1. Prevents the script from executing on the main thread.
 2. Provides an attribute selector for the Party Town library.
 
 ```html
-<script type="partytown">
-  // third-party analytics scripts
+<script type="text/plain" data-partytown>
+  // 3rd-party analytics scripts
 </script>
 ```
 
-With scripts disabled from executing, the Party Town library can lazily load
-and begin executing the scripts from inside a web worker.
-The Party Town library script must also be added to the page, preferrably at the bottom.
+The Party Town library script must also be added to the bottom of the page and have the
+`type="module"` attribute. Note that this script _must_ be hosted from the same origin as
+the html page, rather than a CDN. Additionally, the Party Town library scripts should be
+within their own dedicated root directory, such as `/~partytown/`. This root directory
+becomes the `scope` for the service worker, and all client-side requests within that path
+are intercepted by Party Town.
 
 ```html
-<script src="/partytown.js" async></script>
+<script src="/~partytown/partytown.js" type="module></script>
 ```
+
+With scripts disabled from executing, the Party Town library can lazily begin loading and
+executing the scripts from inside a worker.
+
+## Distribution
 
 The distribution comes with two builds:
 
@@ -62,15 +94,15 @@ Example script with a debug attribute to print out more logs.
 ### Worker Instances
 
 By default all Party Town scripts will load in the same worker. However, each
-script could placed in their own named web-worker, or separated into  
-groups by giving the script a `worker` attribute.
+script could placed in their own named web worker, or separated into  
+groups by giving the script a `data-worker` attribute.
 
 ```html
-<script type="partytown" worker="GTM">
+<script type="text/plain" data-partytown data-worker="GTM">
   // Google Tag Manager
 </script>
 
-<script type="partytown" worker="GA">
+<script type="text/plain" data-partytown data-worker="GA">
   // Google Analytics
 </script>
 ```

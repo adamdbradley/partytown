@@ -1,18 +1,13 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Party Town Test Page" />
+
     <title>Google Tag Manager (GTM) 🎉</title>
-    <script>
-      document.addEventListener('DOMContentLoaded', (ev) => {
-        console.log('DOMContentLoaded', ev);
-      });
-      document.addEventListener('readystatechange', (ev) => {
-        console.log('readystatechange', ev);
-      });
-    </script>
     <!-- Google Tag Manager -->
-    <script type="partytown" worker="GTM">
+    <script type="text/plain" data-partytown data-worker="GTM">
       (function (window, document, i) {
         window['dataLayer'] = window[dataLayer] || [];
 
@@ -29,6 +24,7 @@
       })(window, document, 'GTM-TEST');
     </script>
     <!-- End Google Tag Manager -->
+
     <link
       rel="icon"
       id="favicon"
@@ -37,16 +33,6 @@
   </head>
   <body>
     <h1>Google Tag Manager (GTM) 🎉</h1>
-    <!-- Add the debug attributes to the script element for more logs -->
-    <script
-      src="/partytown.debug.js"
-      src-partytown-worker="/partytown.debug.worker.js"
-      async
-      debug-method-calls
-      debug-property-getters
-      debug-property-setters
-      __debug-define-methods
-      __debug-define-properties
-    ></script>
+    <script type="module" src="/~partytown/partytown.js"></script>
   </body>
 </html>

@@ -1,0 +1,170 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><script type="module">let instanceIds = 2;
+
+const instancesById = new Map;
+
+const idsByInstance = new WeakMap;
+
+const setInstanceId = (instance, instanceId) => {
+    instancesById.set(instanceId, instance);
+    idsByInstance.set(instance, instanceId);
+};
+
+const getInstanceId = instance => {
+    let instanceId = idsByInstance.get(instance);
+    if ("number" != typeof instanceId) {
+        instanceId = instanceIds++;
+        setInstanceId(instance, instanceId);
+    }
+    return instanceId;
+};
+
+const getInstance = instanceId => instancesById.get(instanceId);
+
+const serializeValue = (value, added) => {
+    const type = typeof value;
+    if ("string" === type || "number" === type || "boolean" === type || null === value) {
+        return [ 3, value ];
+    }
+    if ("function" === type) {
+        return [ 2 ];
+    }
+    if (Array.isArray(value)) {
+        if (!added.has(value)) {
+            added.add(value);
+            return [ 4, value.map((v => serializeValue(v, added))) ];
+        }
+        return [ 4, [] ];
+    }
+    if ("object" === type) {
+        if (value === window.parent) {
+            return [ 0 ];
+        }
+        if (value === window.parent.document) {
+            return [ 1 ];
+        }
+        if (value.nodeType) {
+            return [ 6, {
+                $instanceId$: getInstanceId(value),
+                $cstr$: value.nodeType,
+                $nodeName$: value.nodeName
+            } ];
+        }
+        if (!added.has(value)) {
+            added.add(value);
+            if (value.constructor) {
+                if ("HTMLCollection" === value.constructor.name) {
+                    const htmlCollection = [ 6, {
+                        $cstr$: 2,
+                        $items$: Array.from(value).map((v => serializeValue(v, added)[1]))
+                    } ];
+                    console.log("htmlCollection", htmlCollection);
+                    return htmlCollection;
+                }
+            }
+            const obj = {};
+            const objTransfer = [ 5, obj ];
+            for (const k in value) {
+                obj[k] = serializeValue(value[k], added);
+            }
+            return objTransfer;
+        }
+        return [ 5, {} ];
+    }
+    return [];
+};
+
+const deserializeValue = serializedValue => {
+    const type = typeof serializedValue;
+    if ("string" === type || "boolean" === type || "number" === type || null == serializeValue) {
+        return serializedValue;
+    }
+    if (Array.isArray(serializedValue)) {
+        return serializedValue.map(deserializeValue);
+    }
+    if ("object" === type) {
+        const instance = getInstance(serializedValue.$instanceId$);
+        if (instance) {
+            return instance;
+        }
+        const deserializedValue = {};
+        for (const k in serializedValue) {
+            deserializedValue[k] = deserializeValue(serializedValue[k]);
+        }
+        return deserializedValue;
+    }
+};
+
+const getInstanceMember = (instance, memberName, accessRsp) => {
+    accessRsp.$rtnValue$ = serializeValue(instance[memberName], new Set);
+};
+
+const setInstanceProp = (instance, propName, propValue) => {
+    console.log("setInstanceProp", instance, propName, propValue);
+    instance[propName] = deserializeValue(propValue);
+};
+
+const instanceCallMethod = (instance, methodName, serializedArgs, accessRsp) => {
+    console.log("instanceCallMethod", instance, methodName, serializedArgs);
+    const args = deserializeValue(serializedArgs);
+    const rtnValue = instance[methodName].apply(instance, args);
+    accessRsp.$rtnValue$ = serializeValue(rtnValue, new Set);
+};
+
+const readImplementations = (mainWindow, mainDocument) => {
+    const docImpl = mainDocument.implementation.createHTMLDocument();
+    const methodNames = new Set;
+    [ mainWindow, docImpl, docImpl.createTextNode(""), docImpl.createElement("i") ].forEach((mainImpl => {
+        for (const memberName in mainImpl) {
+            memberName.startsWith("webkit") || "function" == typeof mainImpl[memberName] && methodNames.add(memberName);
+        }
+    }));
+    return Array.from(methodNames);
+};
+
+const readMainScripts = doc => Array.from(doc.querySelectorAll('script[data-partytown][type="text/plain"]')).map(((elm, $id$) => {
+    const scriptData = {
+        $id$: $id$,
+        $workerName$: elm.dataset.worker || ""
+    };
+    elm.hasAttribute("src") ? scriptData.$url$ = elm.src : scriptData.$content$ = elm.innerHTML;
+    elm.dataset.partytown = $id$;
+    return scriptData;
+}));
+
+(async (sandboxWindow, createWebWorker) => {
+    const mainWindow = sandboxWindow.parent;
+    const mainDocument = mainWindow.document;
+    const swContainer = sandboxWindow.navigator.serviceWorker;
+    const swRegistration = await swContainer.getRegistration();
+    const webWorker = createWebWorker();
+    const initWebWorkerData = {
+        $initializeScripts$: readMainScripts(mainDocument),
+        $methodNames$: readImplementations(mainWindow, mainDocument)
+    };
+    setInstanceId(mainWindow, 0);
+    setInstanceId(mainDocument, 1);
+    swContainer.addEventListener("message", (ev => {
+        requestAnimationFrame((async () => {
+            const accessRsp = await (async accessReq => {
+                const accessType = accessReq.$accessType$;
+                const instanceId = accessReq.$instanceId$;
+                const memberName = accessReq.$memberName$;
+                const data = accessReq.$data$;
+                const accessRsp = {
+                    $msgId$: accessReq.$msgId$,
+                    $instanceId$: instanceId
+                };
+                try {
+                    const instance = getInstance(instanceId);
+                    instance ? 0 === accessType ? getInstanceMember(instance, memberName, accessRsp) : 1 === accessType ? setInstanceProp(instance, memberName, data) : 2 === accessType && instanceCallMethod(instance, memberName, data, accessRsp) : accessRsp.$error$ = `Instance ${instanceId} not found`;
+                } catch (e) {
+                    accessRsp.$error$ = String(e.stack || e);
+                }
+                return accessRsp;
+            })(ev.data);
+            swRegistration && swRegistration.active && swRegistration.active.postMessage(accessRsp);
+        }));
+    }));
+    webWorker.postMessage(initWebWorkerData);
+})(window, (() => new Worker("partytown-ww.js")));
+</script></head></html>
