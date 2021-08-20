@@ -3,6 +3,7 @@ export type CreateWorker = () => Worker;
 export interface InitWebWorkerData {
   $initializeScripts$: InitializeScriptData[];
   $methodNames$: string[];
+  $scopePath$: string;
 }
 
 export interface InitializeScriptData {

@@ -8,6 +8,7 @@ import {
   SerializedNode,
   SerializedValueTransfer,
   SerializedType,
+  InitWebWorkerData,
 } from '../types';
 import { CstrValues, InstanceIdKey, NodeNameKey, NodeTypeKey, ProxyKey } from './worker-symbols';
 import { PT_PROXY_URL, toLower } from '../utils';
@@ -118,7 +119,7 @@ export const constructInstance = (serializedInstance: SerializedInstance) => {
 
 const sendRequestToServiceWorker = (accessReq: MainAccessRequest) => {
   const xhr = new XMLHttpRequest();
-  xhr.open('POST', PT_PROXY_URL, false);
+  xhr.open('POST', initWebWorkerData.$scopePath$ + PT_PROXY_URL, false);
   xhr.send(JSON.stringify(accessReq));
   const accessRsp: MainAccessResponse = JSON.parse(xhr.responseText);
   if (accessRsp.$error$) {
@@ -166,7 +167,7 @@ export const proxy = <T = any>(obj: T): T => {
       }
 
       const memberName = String(propKey);
-      if (methodNames.includes(memberName)) {
+      if (initWebWorkerData.$methodNames$.includes(memberName)) {
         return createMethodProxy(target, memberName);
       }
 
@@ -233,4 +234,4 @@ export const constructValue = (
   return undefined;
 };
 
-export const methodNames: string[] = [];
+export const initWebWorkerData: InitWebWorkerData = {} as any;

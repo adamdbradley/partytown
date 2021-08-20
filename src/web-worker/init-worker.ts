@@ -1,10 +1,10 @@
 import type { InitWebWorkerData } from '../types';
 import { initMainScriptsInWebWorker } from './worker-script';
+import { initWebWorkerData } from './worker-proxy';
 import { initWebWorkerGlobal } from './worker-global';
-import { methodNames } from './worker-proxy';
 
-export const initWebWorker = (self: Worker, initWebWorkerData: InitWebWorkerData) => {
-  methodNames.push(...initWebWorkerData.$methodNames$);
+export const initWebWorker = (self: Worker, initData: InitWebWorkerData) => {
+  Object.assign(initWebWorkerData, initData);
   initWebWorkerGlobal(self);
-  initMainScriptsInWebWorker(initWebWorkerData.$initializeScripts$);
+  initMainScriptsInWebWorker(initData.$initializeScripts$);
 };

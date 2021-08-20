@@ -15,6 +15,7 @@ export const initSandbox = async (sandboxWindow: Window, createWebWorker: Create
   const initWebWorkerData: InitWebWorkerData = {
     $initializeScripts$: readMainScripts(mainDocument),
     $methodNames$: readImplementations(mainWindow, mainDocument),
+    $scopePath$: swRegistration!.scope!,
   };
 
   setInstanceId(mainWindow, InstanceId.window);

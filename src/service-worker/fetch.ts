@@ -5,13 +5,13 @@ export const onFetchServiceWorkerRequest = (self: ServiceWorkerGlobalScope, ev: 
   const req = ev.request;
   const pathname = new URL(req.url).pathname;
 
-  if (pathname.endsWith('/' + PT_SANDBOX_URL)) {
+  if (pathname.endsWith(PT_SANDBOX_URL)) {
     ev.respondWith(
       new Response(SANDBOX, {
         headers: { 'content-type': 'text/html' },
       })
     );
-  } else if (pathname.endsWith('/' + PT_PROXY_URL)) {
+  } else if (pathname.endsWith(PT_PROXY_URL)) {
     ev.respondWith(httpRequestFromWebWorker(self, req));
   }
 };
