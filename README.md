@@ -28,7 +28,7 @@
 - Partytown library scripts must be hosted from the same origin as the HTML document (not a CDN)
 - DOM operations within the worker are purposely throttled, slowing down worker execution
 - Not ideal for scripts that are required to block the main document (blocking is bad)
-- Service worker network requests (even though they're all intercepted, they not actual external HTTP requests, and do not affect [Lighthouse scores](https://web.dev/performance-scoring/), many service worker network requests may still show up in the network tab)
+- Service worker network requests (even though they're all intercepted, they're not actual external HTTP requests, and do not affect [Lighthouse scores](https://web.dev/performance-scoring/), many service worker network requests may still show up in the network tab)
 
 ### Browser Feature Requirements
 
