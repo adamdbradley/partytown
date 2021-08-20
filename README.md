@@ -38,16 +38,15 @@
 
 ---
 
-## Partytown Library Scripts
+## Partytown Library
 
-For each 3rd-party script that should not run in the main thread, but instead party 🎉 in a web worker, its script element
-should set the `type` attribute to `text/plain`, and set the `data-partytown` attribute. This does two things:
+For each 3rd-party script that should not run in the main thread, but instead party 🎉 in a web worker, its script element should set the `type` attribute to `text/partytown`. This does two things:
 
 1. Prevents the script from executing on the main thread.
 2. Provides an attribute selector for the Partytown library.
 
 ```html
-<script data-partytown type="text/plain">
+<script type="text/partytown">
   // 3rd-party analytics scripts
 </script>
 ```
@@ -58,35 +57,26 @@ The Partytown library should be added to the bottom of the page and include the 
 <script src="/~partytown/partytown.js" async></script>
 ```
 
-Note that this script _must_ be hosted from the same origin as
-the HTML page, rather than a CDN. Additionally, the Partytown library should be
-hosted from its own dedicated root directory `/~partytown/`. This root directory
-becomes the [scope](https://developers.google.com/web/ilt/pwa/introduction-to-service-worker#registration_and_scope)
-for the service worker, and all client-side requests within that path
-are intercepted by Partytown.
+Note that this script _must_ be hosted from the same origin as the HTML page, rather than a CDN. Additionally, the Partytown library should be
+hosted from its own dedicated root directory `/~partytown/`. This root directory becomes the [scope](https://developers.google.com/web/ilt/pwa/introduction-to-service-worker#registration_and_scope) for the service worker, and all client-side requests within that path are intercepted by Partytown.
 
-With scripts disabled from executing, the Partytown library can lazily begin loading and
-executing the scripts from inside a worker.
+With scripts disabled from executing, the Partytown library can lazily begin loading and executing the scripts from inside a worker.
 
 ## Worker Instances
 
-By default all Partytown scripts will load in the same worker. However, each
-script could be placed in their own named web worker, or separated into  
-groups by giving the script a `data-worker` attribute.
+By default all Partytown scripts will load in the same worker. However, each script could be placed in their own named web worker, or separated into groups by giving the script a `data-worker` attribute.
 
 ```html
-<script data-partytown data-worker="GTM" type="text/plain">
+<script data-worker="GTM" type="text/partytown">
   // Google Tag Manager
 </script>
 
-<script data-partytown data-worker="GA" type="text/plain">
+<script data-worker="GA" type="text/partytown">
   // Google Analytics
 </script>
 ```
 
-By placing each script in their own worker it may be easier to separate and debug
-what each script is executing. However, in production it may be preferred to
-share one worker.
+By placing each script in their own worker it may be easier to separate and debug what each script is executing. However, in production it may be preferred to share one worker.
 
 ## Distribution
 
