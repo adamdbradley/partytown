@@ -33,7 +33,6 @@
 
 ### Browser Feature Requirements
 
-- [ES Modules](https://caniuse.com/es6-module)
 - [Service Workers](https://caniuse.com/serviceworkers)
 - [JS Proxies](https://caniuse.com/proxy)
 - [Reflect](https://caniuse.com/mdn-javascript_builtins_reflect)
@@ -54,19 +53,15 @@ should set the `type` attribute to `text/plain`, and set the `data-partytown` at
 </script>
 ```
 
-The Party Town library should be added to the bottom of the page and have both the
-`type="module"` and `async` attributes. The `type="module"` attribute ensures the library is
-loaded as an [ES module](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules),
-and the [async](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-async)
-attribute tells the browser this not a critical resource.
+The Party Town library should be added to the bottom of the page and include the [async](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#attr-async) attribute, which tells the browser this not a critical resource.
 
 ```html
-<script src="/~partytown/partytown.js" type="module" async></script>
+<script src="/~partytown/partytown.js" async></script>
 ```
 
 Note that this script _must_ be hosted from the same origin as
-the HTML page, rather than a CDN. Additionally, the Party Town library scripts should be
-hosted from their own dedicated root directory, such as `/~partytown/`. This root directory
+the HTML page, rather than a CDN. Additionally, the Party Town library should be
+hosted from its own dedicated root directory `/~partytown/`. This root directory
 becomes the [scope](https://developers.google.com/web/ilt/pwa/introduction-to-service-worker#registration_and_scope)
 for the service worker, and all client-side requests within that path
 are intercepted by Party Town.

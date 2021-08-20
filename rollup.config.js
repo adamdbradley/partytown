@@ -147,6 +147,13 @@ export default function (cmdArgs) {
         {
           file: join(buildDir, 'partytown.js'),
           format: 'es',
+          exports: 'none',
+          plugins: [terser(minOpts)],
+        },
+        {
+          file: join(buildDir, 'partytown.debug.js'),
+          format: 'es',
+          exports: 'none',
         },
       ],
       plugins: [
@@ -154,6 +161,7 @@ export default function (cmdArgs) {
           cacheDir: join(cacheDir, 'main'),
           outputToFilesystem: false,
         }),
+        ,
       ],
     };
   }
