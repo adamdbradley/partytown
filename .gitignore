@@ -1,5 +1,3 @@
-node_modules
 .cache
-partytown.js
-partytown.debug.js
-partytown.debug.worker.js
+.DS_Store
+node_modules
