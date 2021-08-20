@@ -5,7 +5,7 @@
 ⚠️ Warning! This is experimental! ⚠️
 
 - Relocates resource intensive scripts to into a [web worker](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API)
-- Web worker DOM implementation within `4kb`
+- Web worker DOM implementation within `3kb`
 - Throttled 3rd-party code by using one `requestAnimationFrame()` per DOM operation, reducing jank
 - Debug what 3rd-party scripts are calling into
 - Sandbox specific browser APIs

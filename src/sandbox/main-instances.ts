@@ -3,7 +3,7 @@ import { InstanceId } from '../types';
 let instanceIds = InstanceId.document + 1;
 
 const instancesById = new Map<number, any>();
-const InstanceIdKey = Symbol('InstanceId');
+const InstanceIdKey = Symbol();
 
 export const setInstanceId = (instance: any, instanceId: number) => {
   instancesById.set(instanceId, instance);
